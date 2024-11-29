@@ -15,19 +15,8 @@ return new class extends Migration
             $table->id();
             $table->integer('pass_id');
             $table->string('name');
+            $table->jsonb('phones');
             $table->unique(['pass_id', 'name']);
-        });
-
-        Schema::create('client_phones', function (Blueprint $table) {
-            $table->id();
-            $table->integer('client_id');
-            $table->unsignedBigInteger('phone');
-            $table->unique(['client_id', 'phone']);
-            $table->foreign('client_id')
-                ->references('id')
-                ->on('clients')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
         });
     }
 
@@ -36,10 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('client_phones', function (Blueprint $table) {
-            $table->dropForeign('client_phones_client_id_foreign');
-        });
-        Schema::drop('client_phones');
         Schema::drop('clients');
     }
 };

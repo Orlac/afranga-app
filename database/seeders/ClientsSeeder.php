@@ -22,48 +22,34 @@ class ClientsSeeder extends Seeder
     {
         $this->fakeGenerator = Factory::create('ru_RU');
         DB::table('clients')->delete();
-        foreach ($this->getClients() as $item) {
-            DB::table('clients')->insertOrIgnore($item[0]);
-            DB::table('client_phones')->insertOrIgnore($item[1]);
+        foreach ($this->getClients() as $clients) {
+            DB::table('clients')->insertOrIgnore($clients);
         }
     }
 
-    private function getClients(int $batchSize = 100): \Iterator
+    private function getClients(int $batchSize = 1000): \Iterator
     {
         $start = 1;
         $clientsBatch = [];
-        $phoneBatch = [];
         while ($start <= $this->countClients) {
             $clientsBatch[] = [
                 'id' => $start,
                 'name' => $this->fakeGenerator->name(),
                 'pass_id' => mt_rand(),
+                'phones' => json_encode(array_map(
+                    fn($vak) => (int) '7' . mt_rand(9000000000, 9999999999),
+                    array_fill(0, $this->countPhones, null)
+                )),
             ];
-            $phoneBatch += array_merge($phoneBatch, $this->getPhones($start));
             if (count($clientsBatch) === $batchSize) {
-                yield [$clientsBatch, $phoneBatch];
+                yield $clientsBatch;
                 $clientsBatch = [];
-                $phoneBatch = [];
             }
             $start++;
         }
         if (count($clientsBatch) > 0) {
-            yield [$clientsBatch, $phoneBatch];
+            yield $clientsBatch;
         }
     }
 
-    private function getPhones(int $clientId): array
-    {
-        $phoneBatch = [];
-        $start = 1;
-        while ($start <= $this->countPhones) {
-            $phoneBatch[] = [
-                'client_id' => $clientId,
-                'phone' => '7' . mt_rand(9000000000, 9999999999),
-
-            ];
-            $start++;
-        }
-        return $phoneBatch;
-    }
 }

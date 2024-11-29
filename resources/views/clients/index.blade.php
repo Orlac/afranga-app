@@ -26,7 +26,7 @@
                                     <td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">{{ $model->id }}</td>
                                     <td class="px-6 py-4">{{ $model->pass_id }}</td>
                                     <td class="px-6 py-4">{{ $model->name }}</td>
-                                    <td class="px-6 py-4"></td>
+                                    <td class="px-6 py-4">{{ implode(', ', $model->getLastPhones()) }}</td>
                                     <td class="px-6 py-4">
                                         <form action="{{ route('clients.destroy', ['id' => $model->id]) }}" method="POST"
                                               onsubmit="return confirm('{{ trans('are You Sure ? ') }}');"
