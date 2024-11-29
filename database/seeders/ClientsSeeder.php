@@ -2,20 +2,25 @@
 
 namespace Database\Seeders;
 
+use Faker\Factory;
+use Faker\Generator;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class ClientsSeeder extends Seeder
 {
-    private int $countClients = 100000;
+    private int $countClients = 1000000;
     private int $countPhones = 5;
+
+    private ?Generator $fakeGenerator = null;
 
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
+        $this->fakeGenerator = Factory::create('ru_RU');
         DB::table('clients')->delete();
         foreach ($this->getClients() as $item) {
             DB::table('clients')->insertOrIgnore($item[0]);
@@ -31,7 +36,7 @@ class ClientsSeeder extends Seeder
         while ($start <= $this->countClients) {
             $clientsBatch[] = [
                 'id' => $start,
-                'name' => 'name_' . $start,
+                'name' => $this->fakeGenerator->name(),
                 'pass_id' => mt_rand(),
             ];
             $phoneBatch += array_merge($phoneBatch, $this->getPhones($start));
@@ -55,6 +60,7 @@ class ClientsSeeder extends Seeder
             $phoneBatch[] = [
                 'client_id' => $clientId,
                 'phone' => '7' . mt_rand(9000000000, 9999999999),
+
             ];
             $start++;
         }

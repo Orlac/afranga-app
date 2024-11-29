@@ -1,0 +1,52 @@
+<x-layout>
+
+    <div class="py-12">
+        <div class="mx-auto max-w-5xl sm:px-6 lg:px-8">
+            <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                <div class="p-6 bg-white border-b border-gray-200">
+                    <div class="mt-1 mb-4">
+{{--                        <a href="{{ route('clients.create') }}">{{ __('Add Client') }}</a>--}}
+                    </div>
+                    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                        {{ $models->links() }}
+                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead
+                                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th  scope="col" class="px-6 py-3">Id</th>
+                                        <th  scope="col" class="px-6 py-3">PassId</th>
+                                        <th  scope="col" class="px-6 py-3">Name</th>
+                                        <th  scope="col" class="px-6 py-3">Phones</th>
+                                        <th  scope="col" class="px-6 py-3"></th>
+                                    </tr>
+                            </thead>
+                            <tbody>
+                            @foreach ($models as $model)
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                    <td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">{{ $model->id }}</td>
+                                    <td class="px-6 py-4">{{ $model->pass_id }}</td>
+                                    <td class="px-6 py-4">{{ $model->name }}</td>
+                                    <td class="px-6 py-4"></td>
+                                    <td class="px-6 py-4">
+                                        <form action="{{ route('clients.destroy', ['id' => $model->id]) }}" method="POST"
+                                              onsubmit="return confirm('{{ trans('are You Sure ? ') }}');"
+                                              style="display: inline-block;">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                            <button class="px-4 py-2 bg-red-700 rounded">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                        {{ $models->links() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</x-layout>
