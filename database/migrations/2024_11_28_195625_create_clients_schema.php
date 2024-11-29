@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->integer('pass_id');
-            $table->string('fio');
-            $table->unique(['pass_id', 'fio']);
+            $table->string('name');
+            $table->unique(['pass_id', 'name']);
         });
 
         Schema::create('client_phones', function (Blueprint $table) {
             $table->integer('client_id');
-            $table->integer('phone');
+            $table->unsignedBigInteger('phone');
             $table->unique(['client_id', 'phone']);
             $table->foreign('client_id')
                 ->references('id')
