@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->jsonb('phones');
             $table->unique(['pass_id', 'name']);
+            $table->index('phones', 'idx_phones', 'btree');
         });
     }
 

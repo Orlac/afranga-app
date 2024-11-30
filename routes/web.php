@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Route;
 //    return view('welcome');
 //});
 
+//Route::post('/export', [ClientsController::class, 'export'])->name('clients.export');
 Route::get('/', [ClientsController::class, 'index'])->name('clients.index');
 Route::get('/create', [ClientsController::class, 'create']);
+//Route::get('/export', [ClientsController::class, 'export']);
 Route::delete('/destroy', [ClientsController::class, 'destroy'])->name('clients.destroy');
+Route::get('/test', [ClientsController::class, 'test']);
+Route::post('/export', [ClientsController::class, 'export'])->name('clients.export');
+

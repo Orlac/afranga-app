@@ -4,8 +4,73 @@
         <div class="mx-auto max-w-5xl sm:px-6 lg:px-8">
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
+                    <div class="py-12">
+                        <div class="mx-auto max-w-5xl sm:px-6 lg:px-8">
+                            <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                                <div class="p-6 bg-white border-b border-gray-200">
+                                    <form method="GET" action="{{ route('clients.index') }}">
+                                        @csrf
+                                        <div class="mb-6">
+                                            <label class="block">
+                                                <span class="text-gray-700">Id: </span>
+                                                <input type="text" name="id" class="" placeholder="123456"
+                                                       value="{{ $request->input('id') }}" />
+                                            </label>
+                                            <hr>
+                                            @error('id')
+                                            <div class="text-sm text-red-600">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="mb-6">
+                                            <label class="block">
+                                                <span class="text-gray-700">Pass Id: </span>
+                                                <input type="text" name="pass_id" class="" placeholder="123456"
+                                                       value="{{ $request->input('pass_id') }}" />
+                                            </label>
+                                            <hr>
+                                            @error('pass_id')
+                                            <div class="text-sm text-red-600">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="mb-6">
+                                            <label class="block">
+                                                <span class="text-gray-700">Name: </span>
+                                                <input type="text" name="name" class="" placeholder="Федосья Максимовна Корнилова"
+                                                       value="{{ $request->input('name') }}" />
+                                            </label>
+                                            <hr>
+                                            @error('name')
+                                            <div class="text-sm text-red-600">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="mb-6">
+                                            <label class="block">
+                                                <span class="text-gray-700">Phone: </span>
+                                                <input type="text" name="phone" class="" placeholder="79045206981"
+                                                       value="{{ $request->input('phone') }}" />
+                                            </label>
+                                            <hr>
+                                            @error('phone')
+                                            <div class="text-sm text-red-600">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="mb-6">
+                                            <button class="px-4 py-2 bg-red-700 rounded">Search</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="mt-1 mb-4">
 {{--                        <a href="{{ route('clients.create') }}">{{ __('Add Client') }}</a>--}}
+                        <div>
+                            <form action="{{ route('clients.export') }}" method="POST" style="display: inline-block;">
+                                <input type="hidden" name="_method" value="POST">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <button class="px-4 py-2 bg-red-700 rounded">Export</button>
+                            </form>
+                        </div>
                     </div>
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                         {{ $models->links() }}

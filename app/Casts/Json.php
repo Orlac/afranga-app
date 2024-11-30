@@ -19,8 +19,8 @@ class Json implements CastsInboundAttributes
     /**
      * @param array<string, mixed> $attributes
      */
-    public function set(Model $model, string $key, mixed $value, array $attributes): string
+    public function set(Model $model, string $key, mixed $value, array $attributes): ?string
     {
-        return json_encode($value);
+        return is_array($value) ? json_encode($value) : null;
     }
 }
