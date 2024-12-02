@@ -3,15 +3,25 @@
 namespace App\Exports;
 
 use App\Models\Clients;
-use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Database\Eloquent\Builder;
 use Iterator;
 use Maatwebsite\Excel\Concerns\FromIterator;
 
-class ClientsExport implements FromIterator
+readonly class ClientsExport implements FromIterator
 {
-    public function __construct(private readonly FormRequest $request)
+    public function __construct(private \Illuminate\Contracts\Database\Query\Builder|Builder $queryBuilder)
     {
 
+    }
+
+    public function headings(): array
+    {
+        return [
+            '#',
+            'Pass Id',
+            'Name',
+            'Phones',
+        ];
     }
 
     /**
@@ -19,10 +29,7 @@ class ClientsExport implements FromIterator
      */
     public function iterator(): Iterator
     {
-        $models = Clients::
-            orderBy('name')
-//            ->take(10)
-            ->get();
+        $models = $this->queryBuilder->get();
         /** @var Clients $model */
         foreach ($models as $model) {
             yield $model->toArray();

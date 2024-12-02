@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Dto\ClientsExportDto;
 use App\Exports\ClientsExport;
 use App\Filters\ClientsFilter;
 use App\Http\Requests\ClientDestroyRequest;
-use App\Http\Requests\ClientsExportRequest;
+use App\Http\Requests\ClientsFilterExportRequest;
 use App\Http\Requests\ClientsFilterRequest;
+use App\Jobs\ClientsExcelExportJob;
 use App\Models\ClientPhones;
 use App\Models\Clients;
 use http\Exception\InvalidArgumentException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Attachment;
 use Illuminate\Routing\Route;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -22,9 +26,10 @@ class ClientsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(ClientsFilterRequest $request, ClientsFilter $clientsFilter)
+    public function index(ClientsFilterRequest $request, ClientsFilter $clientsFilter): View
     {
-        $models = $clientsFilter->apply(Clients::query(), $request)->simplePaginate(100);
+        $filterData = new ClientsExportDto(...$request->validated());
+        $models = $clientsFilter->apply(Clients::query(), $request->validated())->simplePaginate(100);
         return view('clients.index', [
             'models' => $models,
             'request' => $request,
@@ -83,7 +88,7 @@ class ClientsController extends Controller
     {
         $id = $request->get('id');
         Clients::destroy($id);
-        return redirect()->to($request->header('referer'))->with('status', 'Client Delete Successfully');
+        back();
     }
 
     public function test()
@@ -92,27 +97,29 @@ class ClientsController extends Controller
     }
 
     /**
-     * @param ClientsExportRequest $request
-     * @return BinaryFileResponse|null
+     * @param ClientsFilterRequest $request
+     * @param ClientsFilter $clientsFilter
+     * @return BinaryFileResponse|View
      */
-    public function export(ClientsExportRequest $request): ?BinaryFileResponse
+    public function export(ClientsFilterRequest $request, ClientsFilter $clientsFilter): BinaryFileResponse|View
     {
-        set_time_limit(-1);
-        return Excel::download(new ClientsExport($request), 'clients.xlsx');
-//        return '1111111111111111111111111111111111';
-//        echo 3; exit;
-//        $vals = $request->validated();
-//        print_r($vals);
-//        if ($request->validated()) {
-//            echo 1 ;
-//            exit;
-////            return Excel::download(new ClientsExport(), 'clients.xlsx');
-//        } else {
-////            print_r($request->err)
-//            echo 2 ;
-//            exit;
-//        }
-//        return '';
-//        throw new InvalidArgumentException();
+        $builder = $clientsFilter->apply(Clients::query(), $request->validated());
+        if ($builder->count() > 10000) {
+            return view('clients.export_lazy', [
+                'request' => $request,
+            ]);
+        } else {
+            return Excel::download(new ClientsExport($builder), 'clients.xlsx');
+        }
+    }
+
+    public function exportLazy(ClientsFilterExportRequest $request): ?RedirectResponse
+    {
+//        $v = $request->validated();
+//        print_r($v);exit;
+//        ClientsExcelExportJob::dispatch($request);
+        $filterData = new ClientsExportDto(...$request->validated());
+        ClientsExcelExportJob::dispatch($filterData);
+        return redirect()->route('clients.index')->with('status', 'Mail Sent Successfully');
     }
 }

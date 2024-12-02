@@ -5,15 +5,8 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ClientsExportRequest extends FormRequest
+class ClientsFilterExportRequest extends ClientsFilterRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -22,8 +15,8 @@ class ClientsExportRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'pass_id' => ['integer'],
-        ];
+        $rules = parent::rules();
+        $rules['mail'] = ['required', 'email'];
+        return $rules;
     }
 }

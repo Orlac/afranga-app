@@ -55,7 +55,9 @@
                                             @enderror
                                         </div>
                                         <div class="mb-6">
-                                            <button class="px-4 py-2 bg-red-700 rounded">Search</button>
+{{--                                            <button class="px-4 py-2 bg-red-700 rounded">Search</button>--}}
+                                            <input type="submit" value="Search" class="px-4 py-2 bg-red-700 rounded"/>
+                                            <input type="submit" value="Export" formaction="{{ route('clients.export') }}" class="px-4 py-2 bg-red-700 rounded"/>
                                         </div>
                                     </form>
                                 </div>
@@ -64,13 +66,14 @@
                     </div>
                     <div class="mt-1 mb-4">
 {{--                        <a href="{{ route('clients.create') }}">{{ __('Add Client') }}</a>--}}
-                        <div>
-                            <form action="{{ route('clients.export') }}" method="POST" style="display: inline-block;">
-                                <input type="hidden" name="_method" value="POST">
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                <button class="px-4 py-2 bg-red-700 rounded">Export</button>
-                            </form>
-                        </div>
+{{--                        <div>--}}
+{{--                            <form action="{{ route('clients.export') }}" method="POST" style="display: inline-block;">--}}
+{{--                                @csrf--}}
+{{--                                <input type="hidden" name="_method" value="POST">--}}
+{{--                                <input type="hidden" name="_token" value="{{ csrf_token() }}">--}}
+{{--                                <button class="px-4 py-2 bg-red-700 rounded">Export</button>--}}
+{{--                            </form>--}}
+{{--                        </div>--}}
                     </div>
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                         {{ $models->links() }}
