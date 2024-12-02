@@ -1,6 +1,6 @@
 <x-layout>
     <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
-        <span class="font-medium">file is too long, we are send this of email
+        <span class="font-medium">file is too long, we are send this of email</span>
     </div>
     <form action="{{ route('clients.export.lazy') }}" method="POST">
         @csrf

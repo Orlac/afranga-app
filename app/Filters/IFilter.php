@@ -8,7 +8,5 @@ use Illuminate\Foundation\Http\FormRequest;
 
 interface IFilter
 {
-    public function __construct(BaseDto $dto);
-
-    public function apply(Builder|\Illuminate\Contracts\Database\Eloquent\Builder $builder, BaseDto $inputs): Builder|\Illuminate\Contracts\Database\Eloquent\Builder;
+    public function apply(Builder|\Illuminate\Contracts\Database\Eloquent\Builder $builder): Builder|\Illuminate\Contracts\Database\Eloquent\Builder;
 }

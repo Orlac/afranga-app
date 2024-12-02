@@ -11,12 +11,8 @@ use App\Http\Requests\ClientsFilterRequest;
 use App\Jobs\ClientsExcelExportJob;
 use App\Models\ClientPhones;
 use App\Models\Clients;
-use http\Exception\InvalidArgumentException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Mail\Attachment;
-use Illuminate\Routing\Route;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -26,9 +22,10 @@ class ClientsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(ClientsFilterRequest $request, ClientsFilter $clientsFilter): View
+    public function index(ClientsFilterRequest $request): View
     {
-        $filterData = new ClientsExportDto(...$request->validated());
+        $filterDto = new ClientsExportDto(...$request->validated());
+        $clientsFilter = new ClientsFilter($filterDto);
         $models = $clientsFilter->apply(Clients::query(), $request->validated())->simplePaginate(100);
         return view('clients.index', [
             'models' => $models,
@@ -88,22 +85,18 @@ class ClientsController extends Controller
     {
         $id = $request->get('id');
         Clients::destroy($id);
-        back();
-    }
-
-    public function test()
-    {
-        return '555555555555555555';
+        return back();
     }
 
     /**
      * @param ClientsFilterRequest $request
-     * @param ClientsFilter $clientsFilter
      * @return BinaryFileResponse|View
      */
-    public function export(ClientsFilterRequest $request, ClientsFilter $clientsFilter): BinaryFileResponse|View
+    public function export(ClientsFilterRequest $request): BinaryFileResponse|View
     {
-        $builder = $clientsFilter->apply(Clients::query(), $request->validated());
+        $filterDto = new ClientsExportDto(...$request->validated());
+        $clientsFilter = new ClientsFilter($filterDto);
+        $builder = $clientsFilter->apply(Clients::query());
         if ($builder->count() > 10000) {
             return view('clients.export_lazy', [
                 'request' => $request,
@@ -115,11 +108,8 @@ class ClientsController extends Controller
 
     public function exportLazy(ClientsFilterExportRequest $request): ?RedirectResponse
     {
-//        $v = $request->validated();
-//        print_r($v);exit;
-//        ClientsExcelExportJob::dispatch($request);
-        $filterData = new ClientsExportDto(...$request->validated());
-        ClientsExcelExportJob::dispatch($filterData);
+        $filterDto = new ClientsExportDto(...$request->validated());
+        ClientsExcelExportJob::dispatch($filterDto);
         return redirect()->route('clients.index')->with('status', 'Mail Sent Successfully');
     }
 }

@@ -3,27 +3,29 @@
 namespace App\Filters;
 
 use App\Dto\ClientsExportDto;
-use App\Http\Requests\ClientsFilterRequest;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Foundation\Http\FormRequest;
 
-class ClientsFilter implements IFilter
+final readonly class ClientsFilter implements IFilter
 {
-
-    public function apply(Builder|\Illuminate\Contracts\Database\Eloquent\Builder $builder, ClientsExportDto $inputs): Builder|\Illuminate\Contracts\Database\Eloquent\Builder
+    public function __construct(private ClientsExportDto $filterDto)
     {
-//        if (!empty($inputs['name'])) {
-//            $builder->where('name', 'like', '%' . $inputs['name'] . '%');
-//        }
-//        if (!empty($inputs['pass_id'])) {
-//            $builder->where('pass_id', $inputs['pass_id']);
-//        }
-//        if (!empty($inputs['id'])) {
-//            $builder->where('id', $inputs['id']);
-//        }
-//        if (!empty($inputs['phone'])) {
-//            $builder->whereJsonContains('phones', $inputs['phone']);
-//        }
+
+    }
+
+    public function apply(Builder|\Illuminate\Contracts\Database\Eloquent\Builder $builder): Builder|\Illuminate\Contracts\Database\Eloquent\Builder
+    {
+        if (!empty($this->filterDto->name)) {
+            $builder->where('name', 'like', '%' . $this->filterDto->name . '%');
+        }
+        if (!empty($this->filterDto->pass_id)) {
+            $builder->where('pass_id', $this->filterDto->pass_id);
+        }
+        if (!empty($this->filterDto->id)) {
+            $builder->where('id', $this->filterDto->id);
+        }
+        if (!empty($this->filterDto->phone)) {
+            $builder->whereJsonContains('phones', $this->filterDto->phone);
+        }
         $builder->orderBy('id', 'desc');
 
         return $builder;

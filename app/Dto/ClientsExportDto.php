@@ -2,7 +2,7 @@
 
 namespace App\Dto;
 
-readonly class ClientsExportDto extends BaseDto
+final readonly class ClientsExportDto extends BaseDto
 {
     public function __construct(
         public ?int    $id = null,
