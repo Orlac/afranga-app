@@ -36,6 +36,8 @@ class ClientsSeeder extends Seeder
                 'id' => $start,
                 'name' => $this->fakeGenerator->name(),
                 'pass_id' => mt_rand(),
+                'created_at' => $this->fakeGenerator->dateTime(),
+                'updated_at' => $this->fakeGenerator->dateTime(),
                 'phones' => json_encode(array_map(
                     fn($vak) => (int) '7' . mt_rand(9000000000, 9999999999),
                     array_fill(0, $this->countPhones, null)

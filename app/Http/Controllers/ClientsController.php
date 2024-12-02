@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 use App\Dto\ClientsExportDto;
 use App\Exports\ClientsExport;
 use App\Filters\ClientsFilter;
-use App\Http\Requests\ClientDestroyRequest;
+use App\Http\Requests\ClientCreateRequest;
+use App\Http\Requests\ClientFindRequest;
 use App\Http\Requests\ClientsFilterExportRequest;
 use App\Http\Requests\ClientsFilterRequest;
+use App\Http\Requests\ClientStoreRequest;
 use App\Jobs\ClientsExcelExportJob;
 use App\Models\ClientPhones;
 use App\Models\Clients;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -31,11 +32,6 @@ class ClientsController extends Controller
             'models' => $models,
             'request' => $request,
         ]);
-
-//        select c.id, c.pass_id, c.name, string_agg(cp.phone::text, ',') as phones from "clients" as c
-//inner join client_phones as cp on cp.client_id=c.id
-//group by c.id
-//limit 101 offset 1000
     }
 
     /**
@@ -43,49 +39,58 @@ class ClientsController extends Controller
      */
     public function create()
     {
-        //
+        return view('clients.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ClientCreateRequest $request): RedirectResponse
     {
-        //
+        Clients::create($request->validated());
+        return redirect()->route('clients.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Clients $clients)
+    public function show(ClientFindRequest $request)
     {
-        //
+        $client = $request->getClient() ?? abort(404);
+        return view('clients.show', [
+            'model' => $client,
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Clients $clients)
+    public function edit(ClientFindRequest $request)
     {
-        //
+        $client = $request->getClient() ?? abort(404);
+        return view('clients.edit', [
+            'model' => $client,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Clients $clients)
+    public function update(ClientFindRequest $request, ClientStoreRequest $csRequest, Clients $clients): RedirectResponse
     {
-        //
+        $client = $request->getClient() ?? abort(404);
+        $client->update($csRequest->validated());
+        return redirect()->route('clients.index')->with('status', 'Updated Successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ClientDestroyRequest $request): ?RedirectResponse
+    public function destroy(ClientFindRequest $request): ?RedirectResponse
     {
-        $id = $request->get('id');
-        Clients::destroy($id);
-        return back();
+        $client = $request->getClient() ?? abort(404);
+        $client->delete();
+        return redirect()->route('clients.index')->with('status', 'Destroyed Successfully');
     }
 
     /**

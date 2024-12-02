@@ -1,3 +1,9 @@
+<?php
+/**
+ *
+ * @var \Illuminate\Contracts\Pagination\Paginator $models
+ */
+?>
 <x-layout>
 
     <div class="py-12">
@@ -55,9 +61,8 @@
                                             @enderror
                                         </div>
                                         <div class="mb-6">
-{{--                                            <button class="px-4 py-2 bg-red-700 rounded">Search</button>--}}
                                             <input type="submit" value="Search" class="px-4 py-2 bg-red-700 rounded"/>
-                                            <input type="submit" value="Export" formaction="{{ route('clients.export') }}" class="px-4 py-2 bg-red-700 rounded"/>
+                                            | <input type="submit" value="Export" formaction="{{ route('clients.export') }}" class="px-4 py-2 bg-red-700 rounded"/>
                                         </div>
                                     </form>
                                 </div>
@@ -65,18 +70,12 @@
                         </div>
                     </div>
                     <div class="mt-1 mb-4">
-{{--                        <a href="{{ route('clients.create') }}">{{ __('Add Client') }}</a>--}}
-{{--                        <div>--}}
-{{--                            <form action="{{ route('clients.export') }}" method="POST" style="display: inline-block;">--}}
-{{--                                @csrf--}}
-{{--                                <input type="hidden" name="_method" value="POST">--}}
-{{--                                <input type="hidden" name="_token" value="{{ csrf_token() }}">--}}
-{{--                                <button class="px-4 py-2 bg-red-700 rounded">Export</button>--}}
-{{--                            </form>--}}
-{{--                        </div>--}}
+
                     </div>
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                        {{ $models->links() }}
+                        <div class="p-6 bg-white border-b border-gray-200">
+                            {{ $models->links() }}
+                        </div>
                         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead
                                 class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -96,7 +95,9 @@
                                     <td class="px-6 py-4">{{ $model->name }}</td>
                                     <td class="px-6 py-4">{{ implode(', ', $model->getLastPhones()) }}</td>
                                     <td class="px-6 py-4">
-                                        <form action="{{ route('clients.destroy', ['id' => $model->id]) }}" method="POST"
+                                        <a href="{{ route('clients.show', ['id' => $model->id]) }}">Show</a>
+                                        | <a href="{{ route('clients.edit', ['id' => $model->id]) }}">Update</a>
+                                        | <form action="{{ route('clients.destroy', ['id' => $model->id]) }}" method="POST"
                                               onsubmit="return confirm('{{ trans('are You Sure ? ') }}');"
                                               style="display: inline-block;">
                                             <input type="hidden" name="_method" value="DELETE">
@@ -108,7 +109,9 @@
                             @endforeach
                             </tbody>
                         </table>
-                        {{ $models->links() }}
+                        <div class="p-6 bg-white border-b border-gray-200">
+                            {{ $models->links() }}
+                        </div>
                     </div>
                 </div>
             </div>

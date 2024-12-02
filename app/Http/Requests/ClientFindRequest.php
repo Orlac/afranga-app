@@ -2,11 +2,20 @@
 
 namespace App\Http\Requests;
 
+use Closure;
+use App\Models\Clients;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ClientDestroyRequest extends FormRequest
+final class ClientFindRequest extends FormRequest
 {
+    private ?Clients $client = null;
+
+    public function getClient(): ?Clients
+    {
+        return $this->client;
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -24,6 +33,10 @@ class ClientDestroyRequest extends FormRequest
     {
         return [
             'id' => ['required', 'integer'],
+            'id' => [
+                function (string $attribute, mixed $value, Closure $fail) {
+                    $this->client = Clients::where('id', $value)->first();
+                }],
         ];
     }
 }

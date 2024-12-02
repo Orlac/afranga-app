@@ -16,6 +16,8 @@ return new class extends Migration
             $table->integer('pass_id');
             $table->string('name');
             $table->jsonb('phones');
+            $table->dateTime('created_at')->nullable();
+            $table->dateTime('updated_at')->nullable();
             $table->unique(['pass_id', 'name']);
             $table->index('phones', 'idx_phones', 'btree');
         });
