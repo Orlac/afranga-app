@@ -11,7 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @property int $id
  * @property int $pass_id
- * @property name $name
+ * @property string $name
+ * @property string $created_at
+ * @property string $updated_at
  * @property int[] $phones
  */
 class Clients extends Model
