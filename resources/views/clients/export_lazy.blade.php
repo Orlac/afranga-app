@@ -12,9 +12,7 @@
         </div>
 
         <div class="mb-6">
-            <label class="block">
-                <input type="text" name="mail" class="" placeholder="mail@exmpl.com" value="{{ $request->input('mail') ?? 'mail@exmpl.com' }}" />
-            </label>
+            <input type="text" name="mail" style="width: 100%" class="" placeholder="mail@exmpl.com" value="{{ $request->input('mail') ?? 'mail@exmpl.com' }}" />
             <hr>
             @error('mail')
             <div class="text-sm text-red-600">{{ $message }}</div>

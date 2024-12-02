@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /** @property int $pass_id */
 /** @property name $name */
 /** @property int[] $phones */
-/** @property int[] $lastPhones */
 class Clients extends Model
 {
     /** @use HasFactory<ClientsFactory> */
@@ -35,9 +34,9 @@ class Clients extends Model
         ];
     }
 
-    public function getLastPhones(): array
+    public function getLastPhones($count = 2): array
     {
-        return array_slice(array_reverse(json_decode($this->phones, true)), 0, 2);
+        return array_slice(array_reverse(json_decode($this->phones, true)), 0, $count);
     }
 
 }
