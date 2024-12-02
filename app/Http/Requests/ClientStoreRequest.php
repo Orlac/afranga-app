@@ -44,7 +44,11 @@ class ClientStoreRequest extends FormRequest
     {
         $validated = parent::validated();
         if (!empty($validated['phones'])) {
-            $validated['phones'] = array_values(array_filter($validated['phones']));
+            $validated['phones'] = array_slice(
+                array_values(array_filter($validated['phones'])),
+                0,
+                env('CLIENTS_MAX_PHONE_COUNT')
+            );
         }
         return $validated;
     }
